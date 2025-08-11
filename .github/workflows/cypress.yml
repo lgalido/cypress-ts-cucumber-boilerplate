@@ -1,0 +1,41 @@
+name: e2e
+on: [push, pull_request]
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci
+
+      # Download fixtures from S3 (requires secrets)
+      - name: Sync fixtures from S3
+        run: npm run fixtures
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_PREFIX: ${{ secrets.S3_PREFIX }}
+
+      - name: Run Cypress
+        run: npm run cy:run
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          CY_USER: ${{ secrets.CY_USER }}
+          CY_PASS: ${{ secrets.CY_PASS }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+            reports/**
+          if-no-files-found: ignore

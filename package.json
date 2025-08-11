@@ -1,0 +1,25 @@
+{
+  "name": "cypress-ts-cucumber-boilerplate",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fixtures": "node scripts/sync-fixtures.js",
+    "cy:open": "npm run fixtures && cypress open",
+    "cy:run": "npm run fixtures && cypress run",
+    "test": "npm run cy:run"
+  },
+  "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^20.0.5",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.3",
+    "@types/node": "^20.14.10",
+    "@types/mocha": "^10.0.6",
+    "cypress": "^13.10.0",
+    "cypress-mochawesome-reporter": "^3.8.2",
+    "esbuild": "^0.21.5",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.621.0"
+  }
+}
