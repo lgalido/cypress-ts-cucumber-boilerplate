@@ -1,6 +1,17 @@
 export class LoginPage {
-  visit() { cy.visit('/login'); }
-  email() { return cy.get('[data-cy=email]'); }
-  pass() { return cy.get('[data-cy=password]'); }
-  submit() { return cy.get('[data-cy=submit]'); }
+  visit() { 
+    cy.visit('https://the-internet.herokuapp.com/login'); 
+  }
+  
+  email() { 
+    return cy.get('#username'); 
+  }
+  
+  pass() { 
+    return cy.get('#password'); 
+  }
+  
+  submit() { 
+    return cy.get('button[type="submit"]').click(); 
+  }
 }

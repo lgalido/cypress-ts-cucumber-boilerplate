@@ -13,9 +13,9 @@ jobs:
 
       - run: npm ci
 
-      # Download fixtures from S3 (requires secrets)
-      - name: Sync fixtures from S3
-        run: npm run fixtures
+      # Skip S3 fixtures sync for demo (optional step)
+      - name: Sync fixtures from S3 (optional)
+        run: npm run fixtures || echo "Skipping S3 sync - not required for demo"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -23,19 +23,31 @@ jobs:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           S3_PREFIX: ${{ secrets.S3_PREFIX }}
 
-      - name: Run Cypress
+      - name: Run Cypress Tests
         run: npm run cy:run
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}
+          # Demo site doesn't need these secrets, but keeping for compatibility
+          BASE_URL: ${{ secrets.BASE_URL || 'https://the-internet.herokuapp.com' }}
           CY_USER: ${{ secrets.CY_USER }}
           CY_PASS: ${{ secrets.CY_PASS }}
 
-      - name: Upload artifacts
+      - name: Upload test artifacts
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: cypress-artifacts
           path: |
             cypress/screenshots/**
             cypress/videos/**
             reports/**
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mochawesome-report
+          path: reports/
+          retention-days: 7
           if-no-files-found: ignore

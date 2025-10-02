@@ -10,16 +10,18 @@
     "test": "npm run cy:run"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^20.0.5",
+    "@badeball/cypress-cucumber-preprocessor": "^21.0.2",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.3",
-    "@types/node": "^20.14.10",
-    "@types/mocha": "^10.0.6",
-    "cypress": "^13.10.0",
+    "@types/node": "^22.7.5",
+    "cypress": "^13.15.0",
     "cypress-mochawesome-reporter": "^3.8.2",
-    "esbuild": "^0.21.5",
-    "typescript": "^5.5.4"
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.621.0"
+    "@aws-sdk/client-s3": "^3.670.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/e2e/step_definitions/**/*.{js,ts}"
   }
 }
