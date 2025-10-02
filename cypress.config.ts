@@ -1,9 +1,9 @@
-const { defineConfig } = require("cypress");
-const createBundler = require("@bahmutov/cypress-esbuild-preprocessor");
-const { addCucumberPreprocessorPlugin } = require("@badeball/cypress-cucumber-preprocessor");
-const { createEsbuildPlugin } = require("@badeball/cypress-cucumber-preprocessor/esbuild");
+import { defineConfig } from "cypress";
+import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
+import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
+import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
     baseUrl: "https://the-internet.herokuapp.com",
     specPattern: "cypress/e2e/**/*.feature",
@@ -12,7 +12,7 @@ module.exports = defineConfig({
     retries: { runMode: 2, openMode: 0 },
     testIsolation: true,
 
-    async setupNodeEvents(on, config) {
+    async setupNodeEvents(on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) {
       // Cucumber preprocessor
       await addCucumberPreprocessorPlugin(on, config);
 
@@ -22,17 +22,16 @@ module.exports = defineConfig({
         createBundler({ plugins: [createEsbuildPlugin(config)] })
       );
 
-      // Mochawesome reporter
-      try {
-        const mochawesome = require("cypress-mochawesome-reporter/plugin");
+      // Mochawesome reporter - dynamic import
+      const mochawesomeModule = await import("cypress-mochawesome-reporter/plugin");
+      const mochawesome = mochawesomeModule.default;
+      if (typeof mochawesome === 'function') {
         mochawesome(on);
-      } catch (error) {
-        console.log("Mochawesome reporter not available:", error.message);
       }
 
       // Logger task
       on("task", {
-        log(message) {
+        log(message: string) {
           console.log(message);
           return null;
         },
