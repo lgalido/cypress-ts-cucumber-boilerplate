@@ -1,9 +1,9 @@
-import { defineConfig } from "cypress";
-import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
-import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
-import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
+const { defineConfig } = require("cypress");
+const createBundler = require("@bahmutov/cypress-esbuild-preprocessor");
+const { addCucumberPreprocessorPlugin } = require("@badeball/cypress-cucumber-preprocessor");
+const { createEsbuildPlugin } = require("@badeball/cypress-cucumber-preprocessor/esbuild");
 
-export default defineConfig({
+module.exports = defineConfig({
   e2e: {
     baseUrl: "https://the-internet.herokuapp.com",
     specPattern: "cypress/e2e/**/*.feature",
@@ -22,15 +22,15 @@ export default defineConfig({
         createBundler({ plugins: [createEsbuildPlugin(config)] })
       );
 
-      // Mochawesome reporter - simplified import
+      // Mochawesome reporter
       try {
-        const { default: mochawesome } = await import("cypress-mochawesome-reporter/plugin");
+        const mochawesome = require("cypress-mochawesome-reporter/plugin");
         mochawesome(on);
       } catch (error) {
         console.log("Mochawesome reporter not available:", error.message);
       }
 
-      // Handy logger task
+      // Logger task
       on("task", {
         log(message) {
           console.log(message);
