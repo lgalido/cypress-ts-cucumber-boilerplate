@@ -22,15 +22,17 @@ export default defineConfig({
         createBundler({ plugins: [createEsbuildPlugin(config)] })
       );
 
-      // Mochawesome reporter (ESM-friendly import)
-      const mochawesome = (await import("cypress-mochawesome-reporter/plugin" as any))
-        .default as (on: Cypress.PluginEvents) => void;
-      mochawesome(on);
+      // Mochawesome reporter - simplified import
+      try {
+        const { default: mochawesome } = await import("cypress-mochawesome-reporter/plugin");
+        mochawesome(on);
+      } catch (error) {
+        console.log("Mochawesome reporter not available:", error.message);
+      }
 
       // Handy logger task
       on("task", {
-        log(message: unknown) {
-          // eslint-disable-next-line no-console
+        log(message) {
           console.log(message);
           return null;
         },
