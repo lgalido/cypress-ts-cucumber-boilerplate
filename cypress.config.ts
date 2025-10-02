@@ -22,11 +22,15 @@ export default defineConfig({
         createBundler({ plugins: [createEsbuildPlugin(config)] })
       );
 
-      // Mochawesome reporter - dynamic import
-      const mochawesomeModule = await import("cypress-mochawesome-reporter/plugin");
-      const mochawesome = mochawesomeModule.default;
-      if (typeof mochawesome === 'function') {
-        mochawesome(on);
+      // Mochawesome reporter - with proper error handling
+      try {
+        const mochawesomeModule = await import("cypress-mochawesome-reporter/plugin");
+        const mochawesome = mochawesomeModule.default || mochawesomeModule;
+        if (typeof mochawesome === 'function') {
+          mochawesome(on);
+        }
+      } catch (error) {
+        console.log("Mochawesome reporter could not be loaded, continuing without it");
       }
 
       // Logger task
@@ -41,14 +45,17 @@ export default defineConfig({
     },
   },
 
-  reporter: "cypress-mochawesome-reporter",
-  reporterOptions: {
-    reportDir: "reports",
-    charts: true,
-    overwrite: false,
-    html: true,
-    json: true,
-  },
+  // Only set reporter if mochawesome is available
+  ...(process.env.CI ? {} : {
+    reporter: "cypress-mochawesome-reporter",
+    reporterOptions: {
+      reportDir: "reports",
+      charts: true,
+      overwrite: false,
+      html: true,
+      json: true,
+    },
+  }),
 
   env: {
     USER: process.env.CY_USER,
