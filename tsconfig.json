@@ -1,29 +1,21 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "ES2022",
-      "DOM"
-    ],
+    "lib": ["ES2022", "DOM"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "types": [
-      "cypress",
-      "node",
-      "cypress-mochawesome-reporter"
-    ],
-    "allowJs": true,
+    "types": ["cypress", "node"],
+    "resolveJsonModule": true,
+    "allowJs": false,
     "checkJs": false,
     "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "paths": {
-      "*": [
-        "./*"
-      ]
-    }
+    "paths": { "*": ["./*"] }
   },
-  "include": [
-    "cypress/**/*.ts",
-    "cypress/**/*.tsx"
-  ]
+  "include": ["cypress/**/*.ts", "cypress/**/*.tsx", "cypress/**/*.d.ts", "types/**/*.d.ts"],
+  "exclude": ["node_modules"]
 }

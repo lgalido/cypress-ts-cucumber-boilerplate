@@ -8,14 +8,15 @@ Given('I open the login page', () => {
 });
 
 When('I sign in as a standard user', () => {
-  const email = Cypress.env('USER');
-  const pass = Cypress.env('PASS');
-  lp.email().type(String(email || ''));
-  lp.pass().type(String(pass || ''));
+  // Using demo credentials from the-internet.herokuapp.com
+  lp.email().type('tomsmith');
+  lp.pass().type('SuperSecretPassword!');
   lp.submit();
 });
 
 Then('I should see the dashboard', () => {
-  cy.url().should('include', '/dashboard');
-  cy.contains('Welcome').should('be.visible');
+  // Check for successful login page
+  cy.url().should('include', '/secure');
+  cy.contains('Welcome to the Secure Area').should('be.visible');
+  cy.get('.flash.success').should('contain', 'You logged into a secure area!');
 });
